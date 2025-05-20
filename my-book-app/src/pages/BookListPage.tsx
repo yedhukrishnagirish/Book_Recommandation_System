@@ -3,6 +3,7 @@ import { Table, Input, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
 import "../../src/utils/css/BookListPage.css";
+import axios from 'axios';
 
 type Book = {
   id: string;
@@ -19,34 +20,34 @@ const BookListPage: React.FC = () => {
   const [pagination, setPagination] = useState({ current: 1, pageSize: 20 });
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchBooks = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(
-          'https://www.googleapis.com/books/v1/volumes?q=fiction&maxResults=40'
-        );
-        if (!response.ok) throw new Error('Failed to fetch books');
-        const data = await response.json();
+useEffect(() => {
+  const fetchBooks = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        'https://www.googleapis.com/books/v1/volumes?q=fiction&maxResults=40'
+      );
+      
+      const data = response.data;
+      
+      const booksFromApi: Book[] = data.items?.map((item: any) => ({
+        id: item.id,
+        title: item.volumeInfo.title || 'No title',
+        author: item.volumeInfo.authors ? item.volumeInfo.authors.join(', ') : 'Unknown',
+        genre: item.volumeInfo.categories ? item.volumeInfo.categories[0] : 'Unknown',
+        averageRating: item.volumeInfo.averageRating ?? 0,
+      })) || [];
 
-        const booksFromApi: Book[] = data.items?.map((item: any) => ({
-          id: item.id,
-          title: item.volumeInfo.title || 'No title',
-          author: item.volumeInfo.authors ? item.volumeInfo.authors.join(', ') : 'Unknown',
-          genre: item.volumeInfo.categories ? item.volumeInfo.categories[0] : 'Unknown',
-          averageRating: item.volumeInfo.averageRating ?? 0,
-        })) || [];
+      setBooks(booksFromApi);
+    } catch (error: any) {
+      message.error(error.message || 'Error fetching books');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        setBooks(booksFromApi);
-      } catch (error: any) {
-        message.error(error.message || 'Error fetching books');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBooks();
-  }, []);
+  fetchBooks();
+}, []);
 
   const filteredBooks = books.filter((book) =>
     book.title.toLowerCase().includes(searchText.toLowerCase()) ||

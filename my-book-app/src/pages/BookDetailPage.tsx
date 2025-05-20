@@ -7,6 +7,7 @@ import { addReview } from '../features/reviews/reviewsSlice';
 import type { AppDispatch, RootState } from '../store/store';
 import type { GoogleBook } from '../types/googleBook';
 import '../../src/utils/css/BookDetailPage.css';
+import axios from 'axios';
 
 const BookDetailPage = () => {
   const { id } = useParams<{ id: string }>(); 
@@ -24,24 +25,20 @@ const BookDetailPage = () => {
   const [rating, setRating] = React.useState<number>(existingReview?.rating || 0);
   const [text, setText] = React.useState<string>(existingReview?.text || '');
 
-  useEffect(() => {
-    setLoading(true);
-    setError(null);
+useEffect(() => {
+  setLoading(true);
+  setError(null);
 
-    fetch(`https://www.googleapis.com/books/v1/volumes/${id}`)
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch book data');
-        return res.json();
-      })
-      .then(data => {
-        setBook(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, [id]);
+  axios.get(`https://www.googleapis.com/books/v1/volumes/${id}`)
+    .then(res => {
+      setBook(res.data);
+      setLoading(false);
+    })
+    .catch(err => {
+      setError(err.message);
+      setLoading(false);
+    });
+}, [id]);
 
   // Sync local state when review changes
   React.useEffect(() => {
