@@ -55,7 +55,7 @@ useEffect(() => {
     message.success("Review Saved Successfully")
   };
 
-  if (loading) return <div>Loading book details...</div>;
+  if (loading) return <div className="spinner"></div>;
   if (error) return <div>Error: {error}</div>;
   if (!book) return <div>Book not found</div>;
 

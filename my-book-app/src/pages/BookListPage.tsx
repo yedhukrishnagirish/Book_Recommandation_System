@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Input, message } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
+import { AgGridReact } from 'ag-grid-react';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
+import type { RowDoubleClickedEvent } from 'ag-grid-community';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import "../../src/utils/css/BookListPage.css";
-import axios from 'axios';
+import {Input, message } from 'antd';
+import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';   
+ModuleRegistry.registerModules([ AllCommunityModule ]);
 
 type Book = {
   id: string;
@@ -17,72 +21,77 @@ const BookListPage: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
-  const [pagination, setPagination] = useState({ current: 1, pageSize: 20 });
   const navigate = useNavigate();
 
-useEffect(() => {
-  const fetchBooks = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(
-        'https://www.googleapis.com/books/v1/volumes?q=fiction&maxResults=40'
-      );
-      
-      const data = response.data;
-      
-      const booksFromApi: Book[] = data.items?.map((item: any) => ({
-        id: item.id,
-        title: item.volumeInfo.title || 'No title',
-        author: item.volumeInfo.authors ? item.volumeInfo.authors.join(', ') : 'Unknown',
-        genre: item.volumeInfo.categories ? item.volumeInfo.categories[0] : 'Unknown',
-        averageRating: item.volumeInfo.averageRating ?? 0,
-      })) || [];
+  useEffect(() => {
+    const fetchBooks = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          'https://www.googleapis.com/books/v1/volumes?q=fiction&maxResults=40'
+        );
+        const data = response.data;
+        const booksFromApi: Book[] = data.items?.map((item: any) => ({
+          id: item.id,
+          title: item.volumeInfo.title || 'No title',
+          author: item.volumeInfo.authors ? item.volumeInfo.authors.join(', ') : 'Unknown',
+          genre: item.volumeInfo.categories ? item.volumeInfo.categories[0] : 'Unknown',
+          averageRating: item.volumeInfo.averageRating ?? 0,
+        })) || [];
 
-      setBooks(booksFromApi);
-    } catch (error: any) {
-      message.error(error.message || 'Error fetching books');
-    } finally {
-      setLoading(false);
-    }
-  };
+        setBooks(booksFromApi);
+      } catch (error: any) {
+        message.error(error.message || 'Error fetching books');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  fetchBooks();
-}, []);
+    fetchBooks();
+  }, []);
 
-  const filteredBooks = books.filter((book) =>
-    book.title.toLowerCase().includes(searchText.toLowerCase()) ||
-    book.author.toLowerCase().includes(searchText.toLowerCase())
+  // Filter books by title or author searchText
+  const filteredBooks = books.filter(
+    (book) =>
+      book.title.toLowerCase().includes(searchText.toLowerCase()) ||
+      book.author.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  const columns: ColumnsType<Book> = [
+  const columns = [
     {
-      title: 'Index',
-      key: 'index',
-      render: (_text, _record, index) =>
-        (pagination.current - 1) * pagination.pageSize + index + 1,
+      headerName: 'Index',
+      valueGetter: 'node.rowIndex + 1',
+      width: 80,
     },
     {
-      title: 'Title',
-      dataIndex: 'title',
-      key: 'title',
+      headerName: 'Title',
+      field: 'title',
+      sortable: true,
+      filter: true,
+      flex: 2,
     },
     {
-      title: 'Author',
-      dataIndex: 'author',
-      key: 'author',
+      headerName: 'Author',
+      field: 'author',
+      sortable: true,
+      filter: true,
+      flex: 2,
     },
     {
-      title: 'Genre',
-      dataIndex: 'genre',
-      key: 'genre',
+      headerName: 'Genre',
+      field: 'genre',
+      sortable: true,
+      filter: true,
+      flex: 1,
     },
     {
-      title: 'Average Rating',
-      dataIndex: 'averageRating',
-      key: 'averageRating',
-      render: (rating: number) => rating ? rating.toFixed(1) : 'N/A',
-      sorter: (a, b) => a.averageRating - b.averageRating,
-      defaultSortOrder: 'descend',
+      headerName: 'Average Rating',
+      field: 'averageRating',
+      sortable: true,
+      filter: true,
+      flex: 1,
+      valueFormatter: (params: any) =>
+        params.value ? params.value.toFixed(1) : 'N/A',
     },
   ];
 
@@ -94,31 +103,36 @@ useEffect(() => {
         allowClear
         onChange={(e) => {
           setSearchText(e.target.value);
-          setPagination((prev) => ({ ...prev, current: 1 }));
         }}
         className="book-list-search"
         loading={loading}
       />
-      <Table
-        columns={columns}
-        dataSource={filteredBooks}
-        rowKey="id"
-        loading={loading}
-        pagination={{
-          current: pagination.current,
-          pageSize: pagination.pageSize,
-          total: filteredBooks.length,
-          onChange: (page, pageSize) => {
-            setPagination({ current: page, pageSize });
-          },
-        }}
-        onRow={(record) => ({
-          onDoubleClick: () => navigate(`/books/${record.id}`),
-        })}
-      />
-    </div>
-);
 
+      <div
+        className="ag-theme-alpine"
+        style={{ height: '580px', width: '100%' }}
+      >
+        <AgGridReact
+          rowData={filteredBooks}
+          columnDefs={columns}
+          pagination={true}
+          paginationPageSize={20}
+          suppressCellFocus={true}
+          onRowDoubleClicked={(event: RowDoubleClickedEvent) => {
+              navigate(`/books/${event.data.id}`);
+          }}
+          overlayLoadingTemplate={
+            '<span class="ag-overlay-loading-center">Loading...</span>'
+          }
+          overlayNoRowsTemplate={
+            '<span class="ag-overlay-loading-center">No books found</span>'
+          }
+          loadingOverlayComponentParams={{ loadingMessage: 'Loading...' }}
+          loading={loading}
+        />
+      </div>
+    </div>
+  );
 };
 
 export default BookListPage;

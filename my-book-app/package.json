@@ -13,6 +13,8 @@
     "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "@reduxjs/toolkit": "^2.8.2",
     "@types/react-router-dom": "^5.3.3",
+    "ag-grid-community": "^33.3.0",
+    "ag-grid-react": "^33.3.0",
     "antd": "^5.25.2",
     "axios": "^1.9.0",
     "react": "^19.1.0",
