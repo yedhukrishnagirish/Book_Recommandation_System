@@ -8,7 +8,6 @@ const LoginForm = () => {
 
   const onFinish = (values: { username: string; password: string }) => {
     setLoading(true);
-    // Simulate login logic
     setTimeout(() => {
       localStorage.setItem('user', JSON.stringify(values));
       setLoading(false);

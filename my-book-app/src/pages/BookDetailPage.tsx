@@ -5,20 +5,8 @@ import TextArea from 'antd/es/input/TextArea';
 import { useDispatch, useSelector } from 'react-redux';
 import { addReview } from '../features/reviews/reviewsSlice';
 import type { AppDispatch, RootState } from '../store/store';
+import type { GoogleBook } from '../types/googleBook';
 
-interface GoogleBook {
-  id: string;
-  volumeInfo: {
-    title: string;
-    authors?: string[];
-    categories?: string[];
-    averageRating?: number;
-    description?: string;
-    imageLinks?: {
-      thumbnail?: string;
-    };
-  };
-}
 
 const BookDetailPage = () => {
   const { id } = useParams<{ id: string }>(); 
