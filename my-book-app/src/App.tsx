@@ -1,29 +1,28 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import BookListPage from './pages/BookListPage';
+import BookDetailPage from './pages/BookDetailPage';
 import Login from './pages/Login';
 import ProtectedRoute from './routes/ProtectedRoute';
-import { Outlet } from 'react-router-dom';
 
-const DummyBooksPage = () => (
-  <div>
-    <h1>Book List (Dummy Page)</h1>
-  </div>
-);
-
-const App = () => (
-  <Router>
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route
-        path="/books"
-        element={
-          <ProtectedRoute>
-            <DummyBooksPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="*" element={<Login />} />
-    </Routes>
-  </Router>
-);
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/book"  element={
+            <ProtectedRoute>
+              <BookListPage />
+            </ProtectedRoute>
+          }  />
+        <Route path="/books/:id"   element={
+            <ProtectedRoute>
+              <BookDetailPage />
+            </ProtectedRoute>
+          } />
+      </Routes>
+    </Router>
+  );
+}
 
 export default App;
