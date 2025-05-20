@@ -1,48 +1,64 @@
-import React, { useState } from 'react';
-import { Table, Input } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Table, Input, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import type { Book } from '../types/book';
 import { useNavigate } from 'react-router-dom';
 
-const booksData: Book[] = [
-  { id: '1', title: 'The Great Gatsby', author: 'F. Scott Fitzgerald', genre: 'Classic', averageRating: 4.2 },
-  { id: '2', title: '1984', author: 'George Orwell', genre: 'Dystopian', averageRating: 4.5 },
-  { id: '3', title: 'To Kill a Mockingbird', author: 'Harper Lee', genre: 'Classic', averageRating: 4.3 },
-  { id: '4', title: 'Pride and Prejudice', author: 'Jane Austen', genre: 'Romance', averageRating: 4.4 },
-  { id: '5', title: 'The Hobbit', author: 'J.R.R. Tolkien', genre: 'Fantasy', averageRating: 4.6 },
-  { id: '6', title: 'Moby Dick', author: 'Herman Melville', genre: 'Adventure', averageRating: 3.8 },
-  { id: '7', title: 'War and Peace', author: 'Leo Tolstoy', genre: 'Historical', averageRating: 4.1 },
-  { id: '8', title: 'The Catcher in the Rye', author: 'J.D. Salinger', genre: 'Classic', averageRating: 3.9 },
-  { id: '9', title: 'Brave New World', author: 'Aldous Huxley', genre: 'Dystopian', averageRating: 4.0 },
-  { id: '10', title: 'Harry Potter and the Sorcerer\'s Stone', author: 'J.K. Rowling', genre: 'Fantasy', averageRating: 4.7 },
-  { id: '11', title: 'The Lord of the Rings', author: 'J.R.R. Tolkien', genre: 'Fantasy', averageRating: 4.8 },
-  { id: '12', title: 'Animal Farm', author: 'George Orwell', genre: 'Satire', averageRating: 4.2 },
-  { id: '13', title: 'Jane Eyre', author: 'Charlotte Brontë', genre: 'Romance', averageRating: 4.1 },
-  { id: '14', title: 'The Chronicles of Narnia', author: 'C.S. Lewis', genre: 'Fantasy', averageRating: 4.3 },
-  { id: '15', title: 'The Grapes of Wrath', author: 'John Steinbeck', genre: 'Historical', averageRating: 4.0 },
-  { id: '16', title: 'Frankenstein', author: 'Mary Shelley', genre: 'Horror', averageRating: 4.0 },
-  { id: '17', title: 'The Picture of Dorian Gray', author: 'Oscar Wilde', genre: 'Philosophical', averageRating: 4.1 },
-  { id: '18', title: 'Dracula', author: 'Bram Stoker', genre: 'Horror', averageRating: 3.9 },
-  { id: '19', title: 'The Kite Runner', author: 'Khaled Hosseini', genre: 'Drama', averageRating: 4.5 },
-  { id: '20', title: 'Les Misérables', author: 'Victor Hugo', genre: 'Historical', averageRating: 4.3 },
-  { id: '21', title: 'The Alchemist', author: 'Paulo Coelho', genre: 'Adventure', averageRating: 4.0 },
-  { id: '22', title: 'The Da Vinci Code', author: 'Dan Brown', genre: 'Thriller', averageRating: 3.9 },
-  { id: '23', title: 'The Hunger Games', author: 'Suzanne Collins', genre: 'Dystopian', averageRating: 4.4 },
-  { id: '24', title: 'The Fault in Our Stars', author: 'John Green', genre: 'Romance', averageRating: 4.2 },
-  { id: '25', title: 'Gone Girl', author: 'Gillian Flynn', genre: 'Thriller', averageRating: 4.1 },
-];
-
+type Book = {
+  id: string;
+  title: string;
+  author: string;
+  genre: string;
+  averageRating: number;
+};
 
 const BookListPage: React.FC = () => {
+  const [books, setBooks] = useState<Book[]>([]);
+  const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 20 });
   const navigate = useNavigate();
 
-  const filteredBooks = booksData.filter((book) =>
+  useEffect(() => {
+    const fetchBooks = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(
+          'https://www.googleapis.com/books/v1/volumes?q=fiction&maxResults=40'
+        );
+        if (!response.ok) throw new Error('Failed to fetch books');
+        const data = await response.json();
+
+        const booksFromApi: Book[] = data.items?.map((item: any) => ({
+          id: item.id,
+          title: item.volumeInfo.title || 'No title',
+          author: item.volumeInfo.authors ? item.volumeInfo.authors.join(', ') : 'Unknown',
+          genre: item.volumeInfo.categories ? item.volumeInfo.categories[0] : 'Unknown',
+          averageRating: item.volumeInfo.averageRating ?? 0,
+        })) || [];
+
+        setBooks(booksFromApi);
+      } catch (error: any) {
+        message.error(error.message || 'Error fetching books');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBooks();
+  }, []);
+
+  const filteredBooks = books.filter((book) =>
     book.title.toLowerCase().includes(searchText.toLowerCase()) ||
     book.author.toLowerCase().includes(searchText.toLowerCase())
   );
 
   const columns: ColumnsType<Book> = [
+    {
+      title: 'Index',
+      key: 'index',
+      render: (_text, _record, index) =>
+        (pagination.current - 1) * pagination.pageSize + index + 1,
+    },
     {
       title: 'Title',
       dataIndex: 'title',
@@ -62,7 +78,9 @@ const BookListPage: React.FC = () => {
       title: 'Average Rating',
       dataIndex: 'averageRating',
       key: 'averageRating',
-      render: (rating: number) => rating.toFixed(1),
+      render: (rating: number) => rating ? rating.toFixed(1) : 'N/A',
+      sorter: (a, b) => a.averageRating - b.averageRating,
+      defaultSortOrder: 'descend',
     },
   ];
 
@@ -71,16 +89,28 @@ const BookListPage: React.FC = () => {
       <Input.Search
         placeholder="Search by Title or Author"
         allowClear
-        onChange={(e) => setSearchText(e.target.value)}
+        onChange={(e) => {
+          setSearchText(e.target.value);
+          setPagination((prev) => ({ ...prev, current: 1 })); // Reset to page 1 on search
+        }}
         style={{ marginBottom: 20 }}
+        loading={loading}
       />
       <Table
         columns={columns}
         dataSource={filteredBooks}
         rowKey="id"
-        pagination={{ pageSize: 20 }}
-          onRow={(record) => ({
-          onDoubleClick: () => navigate(`/books/${record.id}`), 
+        loading={loading}
+        pagination={{
+          current: pagination.current,
+          pageSize: pagination.pageSize,
+          total: filteredBooks.length,
+          onChange: (page, pageSize) => {
+            setPagination({ current: page, pageSize });
+          },
+        }}
+        onRow={(record) => ({
+          onDoubleClick: () => navigate(`/books/${record.id}`),
         })}
       />
     </div>
