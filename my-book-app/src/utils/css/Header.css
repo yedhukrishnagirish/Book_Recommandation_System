@@ -1,0 +1,20 @@
+.header-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+  background-color: #fafafa;
+}
+
+.footer-container {
+  bottom: 0;
+  width: 100%;
+  padding: 10px 20px;
+  background-color: #fafafa;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  box-sizing: border-box;
+}

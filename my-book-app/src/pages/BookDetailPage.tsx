@@ -8,6 +8,7 @@ import type { AppDispatch, RootState } from '../store/store';
 import type { GoogleBook } from '../types/googleBook';
 import '../../src/utils/css/BookDetailPage.css';
 import axios from 'axios';
+import Header from './Header';
 
 const BookDetailPage = () => {
   const { id } = useParams<{ id: string }>(); 
@@ -62,35 +63,38 @@ useEffect(() => {
   const { volumeInfo } = book;
 
   return (
-     <div className="book-detail-card">
-      <h1>{volumeInfo.title}</h1>
-      <p><strong>Author(s):</strong> {volumeInfo.authors?.join(', ') || 'Unknown'}</p>
-      <p><strong>Genre(s):</strong> {volumeInfo.categories?.join(', ') || 'Unknown'}</p>
-      <p><strong>Average Rating:</strong> {volumeInfo.averageRating ? volumeInfo.averageRating.toFixed(1) : 'N/A'}</p>
+     <>
+       <Header />
+        <div className="book-detail-card">
+          <h1>{volumeInfo.title}</h1>
+          <p><strong>Author(s):</strong> {volumeInfo.authors?.join(', ') || 'Unknown'}</p>
+          <p><strong>Genre(s):</strong> {volumeInfo.categories?.join(', ') || 'Unknown'}</p>
+          <p><strong>Average Rating:</strong> {volumeInfo.averageRating ? volumeInfo.averageRating.toFixed(1) : 'N/A'}</p>
 
-      {volumeInfo.imageLinks?.thumbnail && (
-        <img src={volumeInfo.imageLinks.thumbnail} alt={volumeInfo.title} style={{ marginBottom: 20 }} />
-      )}
+          {volumeInfo.imageLinks?.thumbnail && (
+            <img src={volumeInfo.imageLinks.thumbnail} alt={volumeInfo.title} style={{ marginBottom: 20 }} />
+          )}
 
-      <p>{volumeInfo.description}</p>
+          <p>{volumeInfo.description}</p>
 
-      <h3>Your Review:</h3>
-      <Rate allowClear={false} value={rating} onChange={setRating} />
-      <TextArea
-        rows={4}
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="Write your review here..."
-        style={{ marginTop: 10 }}
-      />
-      <Button type="primary" onClick={handleSubmit} style={{ marginTop: 10 }}>
-        Submit Review
-      </Button>
+          <h3>Your Review:</h3>
+          <Rate allowClear={false} value={rating} onChange={setRating} />
+          <TextArea
+            rows={4}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Write your review here..."
+            style={{ marginTop: 10 }}
+          />
+          <Button type="primary" onClick={handleSubmit} style={{ marginTop: 10 }}>
+            Submit Review
+          </Button>
 
-      <Button onClick={() => navigate(-1)} style={{ marginTop: 20 }}>
-        Back to list
-      </Button>
-    </div>
+          <Button onClick={() => navigate(-1)} style={{ marginTop: 20 }}>
+            Back to list
+          </Button>
+        </div>
+     </>
   );
 };
 

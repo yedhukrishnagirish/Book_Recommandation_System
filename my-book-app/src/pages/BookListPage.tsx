@@ -8,6 +8,7 @@ import "../../src/utils/css/BookListPage.css";
 import {Input, message } from 'antd';
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';   
 import type { Book } from '../types/book';
+import Header from './Header';
 ModuleRegistry.registerModules([ AllCommunityModule ]);
 
 const BookListPage: React.FC = () => {
@@ -89,42 +90,45 @@ const BookListPage: React.FC = () => {
   ];
 
   return (
-    <div className="book-list-container">
-      <h2 className="book-list-title">Book List</h2>
-      <Input.Search
-        placeholder="Search by Title or Author"
-        allowClear
-        onChange={(e) => {
-          setSearchText(e.target.value);
-        }}
-        className="book-list-search"
-        loading={loading}
-      />
-
-      <div
-        className="ag-theme-alpine"
-        style={{ height: '580px', width: '100%' }}
-      >
-        <AgGridReact
-          rowData={filteredBooks}
-          columnDefs={columns}
-          pagination={true}
-          paginationPageSize={20}
-          suppressCellFocus={true}
-          onRowDoubleClicked={(event: RowDoubleClickedEvent) => {
-              navigate(`/books/${event.data.id}`);
+    <>
+      <Header />
+      <div className="book-list-container">
+        <h2 className="book-list-title">Book List</h2>
+        <Input.Search
+          placeholder="Search by Title or Author"
+          allowClear
+          onChange={(e) => {
+            setSearchText(e.target.value);
           }}
-          overlayLoadingTemplate={
-            '<span class="ag-overlay-loading-center">Loading...</span>'
-          }
-          overlayNoRowsTemplate={
-            '<span class="ag-overlay-loading-center">No books found</span>'
-          }
-          loadingOverlayComponentParams={{ loadingMessage: 'Loading...' }}
+          className="book-list-search"
           loading={loading}
         />
+
+        <div
+          className="ag-theme-alpine"
+          style={{ height: '580px', width: '100%' }}
+        >
+          <AgGridReact
+            rowData={filteredBooks}
+            columnDefs={columns}
+            pagination={true}
+            paginationPageSize={20}
+            suppressCellFocus={true}
+            onRowDoubleClicked={(event: RowDoubleClickedEvent) => {
+                navigate(`/books/${event.data.id}`);
+            }}
+            overlayLoadingTemplate={
+              '<span class="ag-overlay-loading-center">Loading...</span>'
+            }
+            overlayNoRowsTemplate={
+              '<span class="ag-overlay-loading-center">No books found</span>'
+            }
+            loadingOverlayComponentParams={{ loadingMessage: 'Loading...' }}
+            loading={loading}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -5,9 +5,9 @@ Build a simplified book recommendation system web application that allows users 
 
 ---
 
-## Technical Specification : Used Tech stacks
+## Technical Specification : Used Tech Stacks
 - **Front-end Framework:** React with TypeScript  
-- **Styled Components:** Ant Design   
+- **UI Library:** Ant Design   
 - **HTTP Client:**  Axios
 
 ---
@@ -91,3 +91,11 @@ Build a simplified book recommendation system web application that allows users 
         ```
         http://localhost:3000
         ```
+## Additional Features / Improvements
+- Docker containerization for consistent environments.
+- Redux Toolkit for review state management.
+- Create a profile page to display user details.
+- Allow the user to logout from the profile page.
+- Show the logged-in username as a tooltip when hovering over the user icon in the header
+- Utilize Ant Design icons for better UI consistency.
+- Replace alerts with tiny modern popup messages (using Ant Design's message component for error and success feedback).

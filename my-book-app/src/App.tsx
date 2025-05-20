@@ -3,6 +3,7 @@ import BookListPage from './pages/BookListPage';
 import BookDetailPage from './pages/BookDetailPage';
 import Login from './pages/LoginPage';
 import ProtectedRoute from './routes/ProtectedRoute';
+import ProfilePage from './pages/ProfilePage';
 
 function App() {
   return (
@@ -15,11 +16,17 @@ function App() {
               <BookListPage />
             </ProtectedRoute>
           }  />
-        <Route path="/books/:id"   element={
+        <Route path="/books/:id" element={
             <ProtectedRoute>
               <BookDetailPage />
             </ProtectedRoute>
           } />
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>
