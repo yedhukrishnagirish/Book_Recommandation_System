@@ -51,11 +51,11 @@ const BookDetailPage = () => {
 
   const handleSubmit = () => {
     if (rating < 1 || rating > 5) {
-      alert('Please provide a rating between 1 and 5');
+      message.error("Please provide a rating between 1 and 5")
       return;
     }
     dispatch(addReview({ bookId: id!, rating, text }));
-    alert('Review Saved Successfully');
+    message.success("Review Saved Successfully")
   };
 
   if (loading) return <div>Loading book details...</div>;
