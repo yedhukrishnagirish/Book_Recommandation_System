@@ -1,6 +1,7 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import { Button, Form, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import "../../utils/css/LoginForm.css";
 
 const LoginForm = () => {
   const [loading, setLoading] = useState(false);
@@ -20,7 +21,7 @@ const LoginForm = () => {
       name="login"
       onFinish={onFinish}
       layout="vertical"
-      style={{ maxWidth: 400, margin: '100px auto' }}
+      className="login-form-container"
     >
       <Form.Item
         label="Username"

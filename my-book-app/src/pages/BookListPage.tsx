@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Table, Input, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
+import "../../src/utils/css/BookListPage.css";
 
 type Book = {
   id: string;
@@ -85,15 +86,16 @@ const BookListPage: React.FC = () => {
   ];
 
   return (
-    <div style={{ maxWidth: 800, margin: '40px auto' }}>
+    <div className="book-list-container">
+      <h2 className="book-list-title">Book List</h2>
       <Input.Search
         placeholder="Search by Title or Author"
         allowClear
         onChange={(e) => {
           setSearchText(e.target.value);
-          setPagination((prev) => ({ ...prev, current: 1 })); // Reset to page 1 on search
+          setPagination((prev) => ({ ...prev, current: 1 }));
         }}
-        style={{ marginBottom: 20 }}
+        className="book-list-search"
         loading={loading}
       />
       <Table
@@ -114,7 +116,8 @@ const BookListPage: React.FC = () => {
         })}
       />
     </div>
-  );
+);
+
 };
 
 export default BookListPage;

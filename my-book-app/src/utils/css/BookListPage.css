@@ -1,0 +1,20 @@
+.book-list-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 24px;
+  border: 1px solid #524679;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background-color: #fff;
+}
+
+.book-list-title {
+  text-align: center;
+  margin-bottom: 16px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.book-list-search {
+  margin-bottom: 20px;
+}

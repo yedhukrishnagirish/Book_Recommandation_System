@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Rate } from 'antd';
+import { Button, message, Rate } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { useDispatch, useSelector } from 'react-redux';
 import { addReview } from '../features/reviews/reviewsSlice';
 import type { AppDispatch, RootState } from '../store/store';
 import type { GoogleBook } from '../types/googleBook';
-
+import '../../src/utils/css/BookDetailPage.css';
 
 const BookDetailPage = () => {
   const { id } = useParams<{ id: string }>(); 
@@ -65,7 +65,7 @@ const BookDetailPage = () => {
   const { volumeInfo } = book;
 
   return (
-    <div style={{ maxWidth: 600, margin: '40px auto' }}>
+     <div className="book-detail-card">
       <h1>{volumeInfo.title}</h1>
       <p><strong>Author(s):</strong> {volumeInfo.authors?.join(', ') || 'Unknown'}</p>
       <p><strong>Genre(s):</strong> {volumeInfo.categories?.join(', ') || 'Unknown'}</p>

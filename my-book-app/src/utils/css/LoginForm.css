@@ -1,0 +1,31 @@
+.login-form-container {
+  max-width: 400px;
+  margin: 100px auto;
+  padding: 32px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.login-form-container .ant-form-item-label > label {
+  font-weight: bold;
+  color: #333;
+}
+
+.login-form-container .ant-input,
+.login-form-container .ant-input-password {
+  border-radius: 4px;
+}
+
+.login-form-container .ant-btn-primary {
+  background-color: #1890ff;
+  border-color: #1890ff;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.login-form-container .ant-btn-primary:hover {
+  background-color: #40a9ff;
+  border-color: #40a9ff;
+}
