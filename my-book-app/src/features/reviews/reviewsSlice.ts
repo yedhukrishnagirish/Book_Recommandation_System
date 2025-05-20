@@ -25,8 +25,11 @@ const reviewsSlice = createSlice({
         state.reviews.push({ bookId, rating, text });
       }
     },
+    clearReviews(state) {
+      state.reviews = [];
+    },
   },
 });
 
-export const { addReview } = reviewsSlice.actions;
+export const { addReview, clearReviews } = reviewsSlice.actions;
 export default reviewsSlice.reducer;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, message, Rate } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
@@ -19,41 +19,44 @@ const BookDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Get existing review for this book from Redux store
   const existingReview = useSelector((state: RootState) =>
     state.reviews.reviews.find(r => r.bookId === id)
   );
 
-  const [rating, setRating] = React.useState<number>(existingReview?.rating || 0);
-  const [text, setText] = React.useState<string>(existingReview?.text || '');
+  const [rating, setRating] = useState<number>(existingReview?.rating || 0);
+  const [text, setText] = useState<string>(existingReview?.text || '');
 
-useEffect(() => {
-  setLoading(true);
-  setError(null);
+  // Fetch book details when component mounts or id changes
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
 
-  axios.get(`https://www.googleapis.com/books/v1/volumes/${id}`)
-    .then(res => {
-      setBook(res.data);
-      setLoading(false);
-    })
-    .catch(err => {
-      setError(err.message);
-      setLoading(false);
-    });
-}, [id]);
+    axios.get(`https://www.googleapis.com/books/v1/volumes/${id}`)
+      .then(res => {
+        setBook(res.data);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, [id]);
 
-  // Sync local state when review changes
-  React.useEffect(() => {
+  // Sync local review state with Redux store updates
+  useEffect(() => {
     setRating(existingReview?.rating || 0);
     setText(existingReview?.text || '');
   }, [existingReview]);
 
+  // Handle review submission
   const handleSubmit = () => {
     if (rating < 1 || rating > 5) {
-      message.error("Please provide a rating between 1 and 5")
+      message.error("Please provide a rating between 1 and 5");
       return;
     }
     dispatch(addReview({ bookId: id!, rating, text }));
-    message.success("Review Saved Successfully")
+    message.success("Review Saved Successfully");
   };
 
   if (loading) return <div className="spinner"></div>;

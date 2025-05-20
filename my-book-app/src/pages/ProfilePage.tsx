@@ -1,23 +1,19 @@
-import React from 'react';
 import { Button, Card } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import Logout from '../components/auth/Logout';
 
 interface User {
   username: string;
   password?: string;
 }
 
-const ProfilePage: React.FC = () => {
+const ProfilePage = () => {
   const navigate = useNavigate();
 
   // Get user from localStorage
-  const userJson = localStorage.getItem('user');
+  const userJson = localStorage.getItem('user') || sessionStorage.getItem('user');
   const user: User | null = userJson ? JSON.parse(userJson) : null;
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    navigate('/login');
-  };
   const handleBack = () => {
     navigate('/book');
   };
@@ -34,12 +30,10 @@ const ProfilePage: React.FC = () => {
       <p>
         <strong>Username:</strong> {user.username}
       </p>
-      <Button  onClick={handleBack} block>
+      <Button  type="primary" onClick={handleBack}>
           Back
         </Button>
-      <Button type="primary" danger onClick={handleLogout} block>
-        Logout
-      </Button>
+      <Logout />
     </Card>
   );
 };

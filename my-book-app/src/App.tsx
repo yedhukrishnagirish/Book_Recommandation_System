@@ -5,6 +5,11 @@ import Login from './pages/LoginPage';
 import ProtectedRoute from './routes/ProtectedRoute';
 import ProfilePage from './pages/ProfilePage';
 
+/* 
+Defines routes for the app, including protected pages like BookList, 
+BookDetail, and Profile. Redirects '/' and unknown paths to '/login'.
+*/
+
 function App() {
   return (
     <Router>

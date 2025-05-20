@@ -1,22 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import type { RowDoubleClickedEvent } from 'ag-grid-community';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import "../../src/utils/css/BookListPage.css";
-import {Input, message } from 'antd';
+import { Input, message } from 'antd';
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';   
 import type { Book } from '../types/book';
 import Header from './Header';
+
 ModuleRegistry.registerModules([ AllCommunityModule ]);
 
-const BookListPage: React.FC = () => {
+const BookListPage = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
   const navigate = useNavigate();
 
+  // Fetch books from Google Books API on component mount
   useEffect(() => {
     const fetchBooks = async () => {
       setLoading(true);
@@ -44,7 +46,7 @@ const BookListPage: React.FC = () => {
     fetchBooks();
   }, []);
 
-  // Filter books by title or author searchText
+  // Filter books by search text matching title or author
   const filteredBooks = books.filter(
     (book) =>
       book.title.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -52,11 +54,6 @@ const BookListPage: React.FC = () => {
   );
 
   const columns = [
-    {
-      headerName: 'Index',
-      valueGetter: 'node.rowIndex + 1',
-      width: 80,
-    },
     {
       headerName: 'Title',
       field: 'title',
@@ -97,9 +94,7 @@ const BookListPage: React.FC = () => {
         <Input.Search
           placeholder="Search by Title or Author"
           allowClear
-          onChange={(e) => {
-            setSearchText(e.target.value);
-          }}
+          onChange={(e) => setSearchText(e.target.value)}
           className="book-list-search"
           loading={loading}
         />
@@ -115,7 +110,7 @@ const BookListPage: React.FC = () => {
             paginationPageSize={20}
             suppressCellFocus={true}
             onRowDoubleClicked={(event: RowDoubleClickedEvent) => {
-                navigate(`/books/${event.data.id}`);
+              navigate(`/books/${event.data.id}`);
             }}
             overlayLoadingTemplate={
               '<span class="ag-overlay-loading-center">Loading...</span>'
