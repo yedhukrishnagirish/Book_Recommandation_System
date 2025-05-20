@@ -7,15 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import "../../src/utils/css/BookListPage.css";
 import {Input, message } from 'antd';
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';   
+import type { Book } from '../types/book';
 ModuleRegistry.registerModules([ AllCommunityModule ]);
-
-type Book = {
-  id: string;
-  title: string;
-  author: string;
-  genre: string;
-  averageRating: number;
-};
 
 const BookListPage: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);

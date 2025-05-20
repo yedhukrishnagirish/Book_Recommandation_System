@@ -1,10 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-
-interface Review {
-  bookId: string;
-  rating: number;
-  text: string;
-}
+import type { Review } from '../../types/review';
 
 interface ReviewsState {
   reviews: Review[];

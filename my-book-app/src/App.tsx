@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import BookListPage from './pages/BookListPage';
 import BookDetailPage from './pages/BookDetailPage';
-import Login from './pages/Login';
+import Login from './pages/LoginPage';
 import ProtectedRoute from './routes/ProtectedRoute';
 
 function App() {
