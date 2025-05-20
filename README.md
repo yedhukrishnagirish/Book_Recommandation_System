@@ -54,16 +54,40 @@ Build a simplified book recommendation system web application that allows users 
         Make sure to install the LTS (Long Term Support) version for better stability.
 
 2. **Verify Node.js and npm installation**  
-    Open your terminal or command prompt and run:  
-        node -v
-        npm -v
+        Open your terminal or command prompt and run: `node -v` and `npm -v`
 
 3. Clone the repository:  
+        ```
         git clone https://github.com/yedhukrishnagirish/Book_Recommandation_System.git
         cd my-book-app
+        ```
 
-4. Install dependencies:  
+4. Install dependencies:
+        ```
         npm install
+        ```
 
 5. Run the development server:
+        ```
         npm run dev
+        ```
+
+6. Alternatively, if you want to use Docker:
+
+    1. **Build the Docker image:**
+
+        ```
+        docker build -t book-recommendation-app .
+        ```
+
+    2. **Run the Docker container and expose it on port 3000:**
+
+        ```
+        docker run -p 3000:3000 book-recommendation-app
+        ```
+
+    3. **Access the application in your browser at:**
+
+        ```
+        http://localhost:3000
+        ```
