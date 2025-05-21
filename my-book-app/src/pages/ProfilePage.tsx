@@ -1,11 +1,8 @@
 import { Button, Card } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import Logout from '../components/auth/Logout';
+import type { User } from '../types/user';
 
-interface User {
-  username: string;
-  password?: string;
-}
 
 const ProfilePage = () => {
   const navigate = useNavigate();

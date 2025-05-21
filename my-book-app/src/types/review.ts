@@ -3,3 +3,11 @@ export interface Review {
   rating: number;
   text: string;
 }
+
+export interface ReviewsState {
+  reviews: Review[];
+}
+
+export const initialState: ReviewsState = {
+  reviews: [],
+};

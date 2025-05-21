@@ -1,13 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { Review } from '../../types/review';
+import { initialState, type Review } from '../../types/review';
 
-interface ReviewsState {
-  reviews: Review[];
-}
-
-const initialState: ReviewsState = {
-  reviews: [],
-};
 
 const reviewsSlice = createSlice({
   name: 'reviews',
